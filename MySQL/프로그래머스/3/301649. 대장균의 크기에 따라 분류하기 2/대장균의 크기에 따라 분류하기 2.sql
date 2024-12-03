@@ -1,13 +1,11 @@
 -- 코드를 작성해주세요
-select
-ID,
-case SIZE
-    when 1 then 'CRITICAL' when 2 then 'HIGH'
-    when 3 then 'MEDIUM' when 4 then 'LOW'
-end
-as COLONY_NAME
-
-from (
-select ID, NTILE(4)over(order by SIZE_OF_COLONY desc) as SIZE
-from ECOLI_DATA
-order by ID) as T;
+SELECT 
+    ID,
+    CASE NTILE(4) OVER (ORDER BY SIZE_OF_COLONY DESC)
+        WHEN 1 THEN 'CRITICAL'
+        WHEN 2 THEN 'HIGH'
+        WHEN 3 THEN 'MEDIUM'
+        WHEN 4 THEN 'LOW'
+    END AS COLONY_NAME
+FROM ECOLI_DATA
+ORDER BY ID;
