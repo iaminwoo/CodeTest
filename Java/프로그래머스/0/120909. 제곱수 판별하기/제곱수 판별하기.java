@@ -3,7 +3,7 @@ class Solution {
         int answer = 2;
         int squareRoot = 1;
         
-        while(squareRoot <= 1000){
+        while(squareRoot * squareRoot <= n){
             if(squareRoot * squareRoot == n){
                 return 1;
             } else {
