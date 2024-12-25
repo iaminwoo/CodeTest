@@ -1,12 +1,6 @@
 class Solution {
     public int[] solution(long n) {
-        int length = 0;
-        long check = n;
-        while(check > 0) {
-            check /= 10;
-            length++;
-        }
-        
+        int length = String.valueOf(n).length();
         int[] answer = new int[length];
         
         for(int i = 0 ; i < length ; i++) {
