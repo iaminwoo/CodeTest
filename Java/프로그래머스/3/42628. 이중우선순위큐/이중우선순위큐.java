@@ -2,59 +2,25 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] operations) {
-        int[] answer = new int[2];
-        
-        PriorityQueue<Integer> maxQueue = new PriorityQueue<>((a,b) -> b - a);
-        PriorityQueue<Integer> minQueue = new PriorityQueue<>();
-        List<Integer> remains = new ArrayList<>();
-        
-        for(String op : operations) {
-            if(remains.isEmpty()) {
-                maxQueue = new PriorityQueue<>((a,b) -> b - a);
-                minQueue = new PriorityQueue<>();
-            }
-            
-            String[] ops = op.split(" ");
-            
-            if(ops[0].equals("I")) {
-                int num = Integer.parseInt(ops[1]);
-                
-                maxQueue.add(num);
-                minQueue.add(num);
-                remains.add(num);
-            } else{
-                if(remains.isEmpty()) continue;
-                
-                if(op.equals("D 1")) {
-                    int num = maxQueue.poll();
-                    remains.remove((Integer) num);
-                } else {
-                    int num = minQueue.poll();
-                    remains.remove((Integer)num);
-                }
+        Queue<Integer> minpq = new PriorityQueue<>();
+        Queue<Integer> maxpq = new PriorityQueue<>(Collections.reverseOrder());
+
+        for (String operation : operations) {
+            if (operation.startsWith("I ")) {
+                int n = Integer.parseInt(operation.substring(2));
+                minpq.offer(n);
+                maxpq.offer(n);
+            } else if (!minpq.isEmpty() && operation.equals("D -1")) {
+                maxpq.remove(minpq.poll());
+            } else if (!maxpq.isEmpty() && operation.equals("D 1")) {
+                minpq.remove(maxpq.poll());
             }
         }
-        
-        if(remains.isEmpty()) {
-            answer = new int[]{0, 0};
-        } else {
-            while(true){
-                if(remains.contains(maxQueue.peek())) {
-                    answer[0] = maxQueue.poll();
-                    break;
-                }
-                maxQueue.poll();
-            }
-            while(true){
-                if(remains.contains(minQueue.peek())) {
-                    answer[1] = minQueue.poll();
-                    break;
-                }
-                minQueue.poll();
-            }
+
+        if (minpq.isEmpty() && maxpq.isEmpty()) {
+            return new int[]{0, 0};
         }
-        
-        
-        return answer;
+
+        return new int[]{maxpq.poll(), minpq.poll()};
     }
 }
