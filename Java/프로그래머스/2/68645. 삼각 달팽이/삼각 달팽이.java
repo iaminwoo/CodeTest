@@ -1,37 +1,41 @@
-public class Solution {
+class Solution {
+    private static int[] dx = {0, 1, -1};
+    private static int[] dy = {1, 0, -1};
+    
     public int[] solution(int n) {
         int[][] square = new int[n][n];
-
-        final int[] dx = {0, 1, -1};
-        final int[] dy = {1, 0, -1};
-
-        int x = 0;
         int y = 0;
+        int x = 0;
         int d = 0;
-        int v = 1;
+        int count = 1;
+        int max = (n * n + n) / 2;
+        
+        square[y][x] = count;
+        
+        while(count < max) {
+            int ny = y + dy[d % 3];
+            int nx = x + dx[d % 3];
 
-        while (true) {
-            square[y][x] = v++;
-            int nx = x + dx[d];
-            int ny = y + dy[d];
-            if(ny == n || nx == n || square[ny][nx] != 0) {
-                d = (d + 1) % 3;
-                nx = x + dx[d];
-                ny = y + dy[d];
-                if(ny == n || nx == n || square[ny][nx] != 0) break;
+            if(ny >= 0 && ny < n && nx >= 0 && nx < n && square[ny][nx] == 0) {
+                y = ny;
+                x = nx;
+                square[y][x] = ++count;
+            } else {
+                d++;
             }
-            x = nx;
-            y = ny;
         }
 
+        
+        int[] answer = new int[max];
         int index = 0;
-        int[] result = new int[v - 1];
-        for (int i = 0 ; i < n ; i++) {
-            for(int j = 0 ; j <= i ; j++) {
-                result[index++] = square[i][j];
+        
+        for(int[] row : square) {
+            for(int num : row) {
+                if(num == 0) continue;
+                answer[index++] = num;
             }
         }
-
-        return result;
+        
+        return answer;
     }
 }
