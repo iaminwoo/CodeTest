@@ -1,66 +1,68 @@
-public class Solution {
-    private static class Point {
-        int x, y;
-        public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
+class Solution {
+    private static int[] dx = {0, -1, 0, 1};
+    private static int[] dy = {-1, 0, 1, 0};
+    
+    private boolean checkIfOk(int y, int x, String[][] room) {
+        int d = 0;
+        
+        for(int i = 0 ; i < 4 ; i++) {
+            int newY = y + dy[i];
+            if(newY < 0 || newY > 4) continue;
+            int newX = x + dx[i];
+            if(newX < 0 || newX > 4) continue;
+            
+            String seat = room[newY][newX];
+            
+            if(seat.equals("X")) continue;
+            
+            if(seat.equals("P")) return false;
+            
+            int e = 0;
+            
+            for(int j = 0 ; j < 4 ; j++) {
+                if(j == (i + 2) % 4) continue;
+                
+                int newNewY = newY + dy[j];
+                if(newNewY < 0 || newNewY > 4) continue;
+                int newNewX = newX + dx[j];
+                if(newNewX < 0 || newNewX > 4) continue;
+                
+                if(room[newNewY][newNewX].equals("P")) return false;
+            }
         }
+        
+        return true;
     }
-
+    
     public int[] solution(String[][] places) {
-        int[] result = new int[places.length];
-        int index = 0;
-
-        for(String[] place : places) {
-            result[index++] = check(place)? 1 : 0;
-        }
-
-        return result;
-    }
-
-    private boolean check(String[] place) {
-        char[][] room = new char[place.length][place[0].length()];
-        for (int i = 0 ; i < place.length ; i++) {
-            room[i] = place[i].toCharArray();
-        }
-
-        for(int i = 0 ; i < room.length ; i++) {
-            for(int j = 0 ; j < room[0].length ; j++) {
-                if(room[i][j] == 'P') {
-                    if(!checkDistance(room, new Point(j, i))) {
-                        return false;
+        int[] answer = new int[5];
+        
+        for(int i = 0 ; i < 5 ; i++) {
+            answer[i] = 1;
+            boolean isOk = true;
+            String[] room = places[i];
+            
+            String[][] roomArray = new String[5][5];
+            for(int y = 0 ; y < 5 ; y++) {
+                String row = room[y];
+                for(int x = 0 ; x < 5 ; x++) {
+                    roomArray[y][x] = "" + row.charAt(x);
+                }
+            }
+            
+            outer:
+            for (int y = 0; y < 5; y++) {
+                for (int x = 0; x < 5; x++) {
+                    if (roomArray[y][x].equals("P")) {
+                        if (!checkIfOk(y, x, roomArray)) {
+                            answer[i] = 0;
+                            break outer;
+                        }
                     }
                 }
             }
         }
-        return true;
-    }
-
-    private boolean checkDistance(char[][] room, Point point) {
-        final int[] dx = {0, 0, -1, 1};
-        final int[] dy = {1, -1, 0, 0};
-
-        for (int d = 0 ; d < 4 ; d++) {
-            int nx = point.x + dx[d];
-            int ny = point.y + dy[d];
-
-            if(nx < 0 || nx >= room.length || ny < 0 || ny >= room.length) continue;
-
-            if(room[ny][nx] == 'P') return false;
-
-            if(room[ny][nx] != 'X') {
-                for(int nd = 0 ; nd < 4 ; nd++) {
-                    int nnx = nx + dx[nd];
-                    int nny = ny + dy[nd];
-
-                    if(nnx == point.x && nny == point.y) continue;
-                    if(nnx < 0 || nnx >= room.length || nny < 0 || nny >= room.length) continue;
-
-                    if(room[nny][nnx] == 'P') return false;
-                }
-            }
-        }
-
-        return true;
+        
+        return answer;
     }
 }
