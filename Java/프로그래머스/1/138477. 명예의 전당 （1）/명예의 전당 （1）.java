@@ -6,7 +6,6 @@ class Solution {
         final int[] answer = new int[totalDays];
         
         PriorityQueue<Integer> pq = new PriorityQueue<>();
-        int idx = 0;
         
         for(int day = 0 ; day < totalDays ; day++) {
             pq.offer(score[day]);
