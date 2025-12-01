@@ -1,41 +1,37 @@
 import java.util.*;
 
 class Solution {
-    private Map<String, Integer> dict = new HashMap<>();
-    private int dictSize = 27;
-    
-    private int[] checkDict(String msg, int idx) {
-        if(msg.length() <= idx) return new int[]{0};
-        String target = msg.substring(0, idx + 1);
+    public int[] solution(String msg) {
+        List<Integer> answer = new ArrayList<>();
+        Map<String, Integer> dict = new HashMap<>();
         
-        if(target.length() == 1 || dict.keySet().contains(target)) {
+        // A ~ Z 추가 (1단계)
+        for(int i = 1 ; i <= 26 ; i++) {
+            dict.put("" + (char)(i + 64), i);
+        }
+        
+        int idx = 0;
+        while(idx < msg.length()) {
+            // 입력과 일치하는 가장 긴 문자열 w 찾기 (2단계)
+            String w = "";
             
-            int[] result = checkDict(msg, idx + 1);
-            if(result[0] == 0) {
-                if(target.length() == 1) return new int[]{1, target.charAt(0) - 64};
+            // 입력위치부터 한글자씩 늘려가며 사전 확인
+            for(int len = 0 ; idx + len < msg.length() ; len++) {
+                String wc = msg.substring(idx, idx + len + 1);
                 
-                return new int[]{target.length(), dict.get(target)};
+                if(dict.containsKey(wc)) {
+                    // 사전에 있으면 w 에 저장
+                    w = wc;
+                } else {
+                    // 사전에 없으면 사전 추가 후 반복문 종료 (4단계)
+                    dict.put(wc, dict.size() + 1);
+                    break;
+                }
             }
             
-            return result;
-        } else {
-            dict.put(target, dictSize++);
-            return new int[]{0};
-        }
-    }
-    
-    public int[] solution(String msg) {
-        List<Integer> answer = new ArrayList<>();;
-        
-        int loop = 0;
-        while(msg.length() > 0) {
-            int[] result = checkDict(msg, 0);
-            
-            answer.add(result[1]);
-            
-            msg = msg.substring(result[0], msg.length());
-            
-            if(loop > 5) break;
+            // w의 인덱스 반환 및 인덱스 이동 (3단계)
+            answer.add(dict.get(w));
+            idx += w.length();
         }
         
         return answer.stream().mapToInt(Integer::intValue).toArray();
