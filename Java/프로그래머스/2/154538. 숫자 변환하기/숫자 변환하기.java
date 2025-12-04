@@ -17,14 +17,13 @@ class Solution {
             
             for(int i = 0 ; i < size ; i++) {
                 int c = queue.poll();
-            
-                int[] nextNumbers = {c + n, c * 2, c * 3};
-
-                for(int next : nextNumbers) {
+                int[] nextNumber = {c + n, c * 2, c * 3};
+                
+                for(int next : nextNumber) {
                     if(next > y) continue;
-
+                    
                     if(next == y) return answer + 1;
-
+                    
                     if(!visited[next]) {
                         visited[next] = true;
                         queue.add(next);
