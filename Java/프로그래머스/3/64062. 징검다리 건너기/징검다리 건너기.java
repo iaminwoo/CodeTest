@@ -2,7 +2,7 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] stones, int k) {
-        Deque<Integer> deque = new LinkedList<>();
+        Deque<Integer> deque = new ArrayDeque<>();
         int[] maxs = new int[stones.length - k + 1];
         
         for(int i = 0 ; i < k ; i++) {
