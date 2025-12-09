@@ -1,6 +1,5 @@
 class Solution {
     public int solution(int[] queue1, int[] queue2) {
-        int answer = -2;
         final int l = queue1.length;
         
         int[] newArr = new int[l * 4];
@@ -30,12 +29,12 @@ class Solution {
         }
         
         int count = 0;
-        while(n != sum) {
-            if(count > l * 4) return -1;
+        while (n != sum) {
+            if (count > l * 4) return -1;
             
             count++;
             
-            if(n > sum) {
+            if (n > sum) {
                 sum += newArr[end++];
             } else {
                 sum -= newArr[start++];
