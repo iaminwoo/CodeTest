@@ -1,52 +1,74 @@
 import java.util.*;
 
 class Solution {
-    public int solution(int N, int[][] road, int K) {
-        int[][][] costs = new int[N + 1][N + 1][1];
-        for (int[] r : road) {
-            int a = r[0];
-            int b = r[1];
-            int cost = r[2];
-            
-            if (costs[a][b][0] == 0) {
-                costs[a][b][0] = cost;
-            } else {
-                costs[a][b][0] = Math.min(costs[a][b][0], cost);
-            }
-            
-            if (costs[b][a][0] == 0) {
-                costs[b][a][0] = cost;
-            } else {
-                costs[b][a][0] = Math.min(costs[b][a][0], cost);
-            }
+    private class Node implements Comparable<Node> {
+        int index;
+        int dist;
+        
+        private Node(int i, int d) {
+            index = i;
+            dist = d;
         }
         
-        Queue<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{1, 0});
+        public int compareTo(Node other) {
+            return Integer.compare(this.dist, other.dist);
+        }
+    }
+    
+    private Map<Integer, List<Node>> getGraph(int N, int[][] road) {
+        Map<Integer, List<Node>> graph = new HashMap<>();
         
-        int[] min = new int[N + 1];
-        Arrays.fill(min, Integer.MAX_VALUE);
-        min[1] = 0;
+        for (int i = 0 ; i <= N ; i++) {
+            graph.put(i, new ArrayList<>());
+        }
         
-        while(!queue.isEmpty()) {
-            int[] currents = queue.poll();
-            int current = currents[0];
-            int sum = currents[1];
+        for (int[] r : road) {
+            int u = r[0];
+            int v = r[1];
+            int dist = r[2];
             
-            for (int i = 1 ; i <= N ; i++) {
-                int c = costs[current][i][0];
-                if (c != 0 && min[i] > sum + c) {
-                    min[i] = sum + c;
-                    queue.add(new int[]{i, sum + c});
+            graph.get(u).add(new Node(v, dist));
+            graph.get(v).add(new Node(u, dist));
+        }
+        
+        return graph;
+    }
+    
+    private static final int INF = 100_000_000;
+    
+    public int solution(int N, int[][] road, int K) {
+        int answer = 0;
+        
+        Map<Integer, List<Node>> graph = getGraph(N, road);
+        
+        int[] dist = new int[N + 1];
+        Arrays.fill(dist, INF);
+        
+        dist[1] = 0;
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.offer(new Node(1, 0));
+        
+        while (!pq.isEmpty()) {
+            Node cur = pq.poll();
+            int curIdx = cur.index;
+            int curDist = cur.dist;
+            
+            if (curDist > dist[curIdx]) continue;
+            
+            for (Node n : graph.get(curIdx)) {
+                int cost = dist[curIdx] + n.dist;
+                
+                if (cost < dist[n.index]) {
+                    dist[n.index] = cost;
+                    pq.offer(new Node(n.index, cost));
                 }
             }
         }
         
-        int answer = 0;
         for (int i = 1 ; i <= N ; i++) {
-            if (min[i] <= K) answer++;
+            if (dist[i] <= K) answer++;
         }
-        
+
         return answer;
     }
 }
