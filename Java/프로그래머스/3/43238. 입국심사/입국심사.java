@@ -1,32 +1,31 @@
 class Solution {
-    private boolean isValid(long mid, int n, int[] times) {
+    private long processed(long totalTime, int[] times, int n) {
         long sum = 0;
         
         for (int t : times) {
-            sum += mid / t;
+            sum += totalTime / t;
+            if (sum >= n) return sum;
         }
         
-        return sum >= n;
+        return sum;
     }
     
     public long solution(int n, int[] times) {
-        long answer = 0;
         
-        long start = 1;
-        long end = 1000000000000000000L;
+        long left = 1;
+        long right = 1_000_000_000_000_000_000L;
         
-        while (end > start) {
-            long mid = (start + end) / 2;
+        while (left < right) {
+            long mid = left + (right - left) / 2;
             
-            if(isValid(mid, n, times)) {
-                end = mid;
+            if (processed(mid, times, n) >= n) {
+                right = mid;
             } else {
-                start = mid + 1;
+                left = mid + 1;
             }
         }
         
-        answer = start;
-        
+        long answer = right;
         return answer;
     }
 }
