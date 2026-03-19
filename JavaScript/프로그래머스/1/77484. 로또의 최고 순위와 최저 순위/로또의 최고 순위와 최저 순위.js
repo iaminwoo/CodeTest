@@ -1,13 +1,13 @@
 function solution(lottos, win_nums) {
     
     const result = lottos.reduce((result, lot) => {
-        if (lot !== 0 && win_nums.includes(lot)) result.inc++;
-        if (lot !== 0 && !win_nums.includes(lot)) result.notInc++;
+        if (lot === 0) result.zero++;
+        else if (win_nums.includes(lot)) result.inc++;
         return result;
-    }, { inc: 0, notInc: 0 });
+    }, { inc: 0, zero: 0 });
     
-    let best = 7 - 6 + result.notInc;
     let worst = 7 - result.inc;
+    let best = worst - result.zero;
     
-    return [best === 7 ? 6 : best, worst === 7 ? 6 : worst];
+    return [Math.min(6, best), Math.min(6, worst)];
 }
