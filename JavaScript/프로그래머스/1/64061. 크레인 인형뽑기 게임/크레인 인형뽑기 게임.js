@@ -4,6 +4,7 @@ function solution(board, moves) {
     let answer = 0;
     
     for (let i = 0 ; i < board[0].length ; i++) {
+        tops[i] = board.length;
         for (let j = 0 ; j < board.length ; j++) {
             if (board[j][i] !== 0) {
                 tops[i] = j;
@@ -14,7 +15,7 @@ function solution(board, moves) {
     
     moves.forEach(col => {
         const top = tops[col - 1];
-        if (top === board.length) return;
+        if (top >= board.length) return;
         
         basket.push(board[top][col - 1]);
         tops[col - 1] += 1;
