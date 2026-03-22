@@ -30,10 +30,7 @@ class Solution {
         
         for (int i = 0 ; i < result.size() ; i++) {
             Data d = result.get(i);
-            answer[i][0] = d.code;
-            answer[i][1] = d.date;
-            answer[i][2] = d.maximum;
-            answer[i][3] = d.remain;
+            answer[i] = new int[]{d.code, d.date, d.maximum, d.remain};
         }
         
         return answer;
